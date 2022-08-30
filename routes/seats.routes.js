@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { v4: uuidv4 } = require('uuid');
+const e = require('express');
 
 router.route('/seats').get((req, res) => {
   res.json(db.seats);
@@ -21,9 +22,30 @@ router.route('/seats').post((req, res) => {
     client,
     email,
   };
-  if (day && seat && client && email) {
+
+  if (
+    day &&
+    seat &&
+    client &&
+    email &&
+    !db.seats.some(
+      (element) =>
+        element.seat == newElement.seat && element.day == newElement.day
+    )
+  ) {
     db.seats.push(newElement);
     res.json({ message: 'OK' });
+  } else if (
+    day &&
+    seat &&
+    client &&
+    email &&
+    db.seats.some(
+      (element) =>
+        element.seat == newElement.seat && element.day == newElement.day
+    )
+  ) {
+    res.status(404).json({ message: 'The slot is already taken...' });
   } else {
     res.status(404).json({ message: '404 not found...' });
   }
