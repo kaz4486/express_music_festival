@@ -1,24 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Progress, Alert } from 'reactstrap';
-import {
-  getSeats,
-  loadSeatsRequest,
-  getRequests,
-} from '../../../redux/seatsRedux';
+import { Button } from 'reactstrap';
+// Progress, Alert
+import { getSeats, loadSeats } from '../../../redux/seatsRedux';
+// getRequests,
 import './SeatChooser.scss';
+import io from 'socket.io-client';
+import { CLIENT_URL } from '../../../config';
 
 const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
+  const socket = io(CLIENT_URL);
+
   const dispatch = useDispatch();
   const seats = useSelector(getSeats);
-  const requests = useSelector(getRequests);
+
+  // const requests = useSelector(getRequests);
 
   useEffect(() => {
-    dispatch(loadSeatsRequest());
-    const timer = setInterval(() => {
-      dispatch(loadSeatsRequest());
-    }, 120000);
-    return () => clearInterval(timer);
+    socket.on('seatsUpdated', (seats) => dispatch(loadSeats(seats)));
+
+    // const timer = setInterval(() => {
+    //   dispatch(loadSeatsRequest());
+    // }, 120000);
+    // return () => clearInterval(timer);
   }, [dispatch]);
 
   const isTaken = (seatId) => {
@@ -61,17 +65,17 @@ const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
       <small id='pickHelpTwo' className='form-text text-muted ml-2 mb-4'>
         <Button outline color='primary' /> – it's empty
       </small>
-      {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].success && (
-        <div className='seats'>
-          {[...Array(50)].map((x, i) => prepareSeat(i + 1))}
-        </div>
-      )}
+      {/* {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].success &&  */}
+      <div className='seats'>
+        {[...Array(50)].map((x, i) => prepareSeat(i + 1))}
+      </div>
+      {/* }
       {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].pending && (
         <Progress animated color='primary' value={50} />
-      )}
-      {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].error && (
+      )} */}
+      {/* {requests['LOAD_SEATS'] && requests['LOAD_SEATS'].error && (
         <Alert color='warning'>Couldn't load seats...</Alert>
-      )}
+      )} */}
     </div>
   );
 };

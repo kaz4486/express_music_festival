@@ -1,12 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const socket = require('socket.io');
 
 const app = express();
+
+const server = app.listen(process.env.PORT || 8000, () => {
+  console.log('Server is running on port: 8000');
+});
+
+const io = socket(server);
+
+io.on('connection', (socket) => {
+  console.log('New socket!' + socket.id);
+});
 
 app.use(cors());
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 const testimonialsRoutes = require('./routes/testimonials.routes');
 const seatsRoutes = require('./routes/seats.routes');
@@ -24,8 +40,4 @@ app.get('*', (req, res) => {
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found...' });
-});
-
-app.listen(process.env.PORT || 8000, () => {
-  console.log('Server is running on port: 8000');
 });

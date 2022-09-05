@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { v4: uuidv4 } = require('uuid');
-const e = require('express');
 
 router.route('/seats').get((req, res) => {
   res.json(db.seats);
+  req.io.emit('seatsUpdated', db.seats);
 });
 
 router.route('/seats/:id').get((req, res) => {
@@ -34,6 +34,8 @@ router.route('/seats').post((req, res) => {
     )
   ) {
     db.seats.push(newElement);
+    req.io.emit('seatsUpdated', db.seats);
+
     res.json({ message: 'OK' });
   } else if (
     day &&

@@ -9,7 +9,7 @@ import {
   Alert,
   Progress,
 } from 'reactstrap';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addSeatRequest,
@@ -24,6 +24,10 @@ const OrderTicketForm = () => {
   const dispatch = useDispatch();
   const requests = useSelector(getRequests);
   console.log(requests);
+
+  useEffect(() => {
+    dispatch(loadSeatsRequest());
+  }, [dispatch]);
 
   const [order, setOrder] = useState({
     client: '',
@@ -56,7 +60,7 @@ const OrderTicketForm = () => {
       setOrder({
         client: '',
         email: '',
-        day: 1,
+        day: order.day,
         seat: '',
       });
       dispatch(loadSeatsRequest());
