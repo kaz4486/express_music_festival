@@ -10,7 +10,7 @@ const server = app.listen(process.env.PORT || 8000, () => {
 });
 
 const io = socket(server, {
-  cors: { origins: '*:*', methods: ['GET', 'POST'] },
+  cors: { origin: '*' },
 });
 
 io.on('connection', (socket) => {
