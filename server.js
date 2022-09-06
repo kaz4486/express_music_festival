@@ -9,17 +9,18 @@ const server = app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
 });
 
-const io = socket(server, {
-  cors: {
-    origin: '*',
-  },
-});
+const io = socket(server);
 
 io.on('connection', (socket) => {
   console.log('New socket!' + socket.id);
 });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000' || 'http://localhost:8000',
+    methods: 'GET, POST',
+  })
+);
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));
 
