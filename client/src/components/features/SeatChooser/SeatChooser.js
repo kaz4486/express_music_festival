@@ -9,9 +9,7 @@ import io from 'socket.io-client';
 import { CLIENT_URL } from '../../../config';
 
 const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
-  const socket = io(CLIENT_URL, {
-    withCredentials: false,
-  });
+  const socket = io(CLIENT_URL);
 
   let numbersOfFreeSeats = 0;
   let numbersOfSeats = 0;
