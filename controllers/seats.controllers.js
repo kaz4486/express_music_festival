@@ -2,7 +2,7 @@ const Seat = require('../models/seat.model');
 
 exports.getAll = async (req, res) => {
   try {
-    res.json(await Seat.find().populate('client'));
+    res.json(await Seat.find());
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -10,7 +10,7 @@ exports.getAll = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
-    const seat = await Seat.findById(req.params.id).populate('client');
+    const seat = await Seat.findById(req.params.id);
     if (!seat) res.status(404).json({ message: 'Not found' });
     else res.json(seat);
   } catch (err) {
@@ -19,9 +19,9 @@ exports.getById = async (req, res) => {
 };
 
 exports.post = async (req, res) => {
+  const { day, seat, client, email } = req.body;
   try {
-    const { day, seat, client } = req.body;
-    const newSeat = new Seat({ day, seat, client });
+    const newSeat = new Seat({ day, seat, client, email });
     await newSeat.save();
     res.json({ message: 'OK' });
   } catch (err) {
@@ -30,14 +30,14 @@ exports.post = async (req, res) => {
 };
 
 exports.put = async (req, res) => {
-  const { day, seat, client } = req.body;
+  const { day, seat, client, email } = req.body;
 
   try {
     const seatData = await Seat.findOneAndUpdate(
       { _id: req.params.id },
-      { $set: { day, seat, client } },
+      { $set: { day, seat, client, email } },
       { new: true }
-    ).populate('client');
+    );
     if (seatData) {
       res.json({
         message: 'OK',
