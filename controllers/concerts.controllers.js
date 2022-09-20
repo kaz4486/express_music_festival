@@ -1,8 +1,19 @@
 const Concert = require('../models/concert.model');
+const Seat = require('../models/seat.model');
 
 exports.getAll = async (req, res) => {
   try {
-    res.json(await Concert.find());
+    const seatsDay1 = await Seat.find({ day: 1 });
+    const seatsDay2 = await Seat.find({ day: 2 });
+    const ticketsLeftDay1 = 50 - seatsDay1.length;
+    const ticketsLeftDay2 = 50 - seatsDay2.length;
+    const concerts = await Concert.find();
+    concerts.forEach((concert) => {
+      concert.day === 1
+        ? (concert.tickets = ticketsLeftDay1)
+        : (concert.tickets = ticketsLeftDay2);
+    });
+    res.json(concerts);
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -11,6 +22,52 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const concert = await Concert.findById(req.params.id);
+    if (!concert) res.status(404).json({ message: 'Not found' });
+    else res.json(concert);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+exports.getByPerformer = async (req, res) => {
+  try {
+    const concert = await Concert.find({ performer: req.params.performer });
+    console.log(concert);
+    if (!concert) res.status(404).json({ message: 'Not found' });
+    else res.json(concert);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+exports.getByGenre = async (req, res) => {
+  try {
+    const concert = await Concert.find({ genre: req.params.genre });
+    console.log(concert);
+    if (!concert) res.status(404).json({ message: 'Not found' });
+    else res.json(concert);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+exports.getByPrice = async (req, res) => {
+  try {
+    const concert = await Concert.find({
+      price: { $gte: req.params.price_min, $lte: req.params.price_max },
+    });
+    console.log(concert);
+    if (!concert) res.status(404).json({ message: 'Not found' });
+    else res.json(concert);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+exports.getByDay = async (req, res) => {
+  try {
+    const concert = await Concert.find({ day: req.params.day });
+    console.log(concert);
     if (!concert) res.status(404).json({ message: 'Not found' });
     else res.json(concert);
   } catch (err) {

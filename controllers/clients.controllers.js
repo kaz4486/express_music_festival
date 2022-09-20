@@ -21,6 +21,7 @@ exports.getById = async (req, res) => {
 exports.post = async (req, res) => {
   try {
     const { name, email } = req.body;
+    // findOneandUpdate {email} upsent new:true
     const newClient = new Client({ name, email });
     await newClient.save();
     res.json({ message: 'OK' });

@@ -1,4 +1,5 @@
 const Seat = require('../models/seat.model');
+const Client = require('../models/client.model');
 
 exports.getAll = async (req, res) => {
   try {
@@ -13,6 +14,7 @@ exports.getById = async (req, res) => {
     const seat = await Seat.findById(req.params.id);
     if (!seat) res.status(404).json({ message: 'Not found' });
     else res.json(seat);
+    // else res.json({...seat, client: client.name, email: client.email})
   } catch (err) {
     res.status(500).json({ message: err });
   }
@@ -21,9 +23,32 @@ exports.getById = async (req, res) => {
 exports.post = async (req, res) => {
   const { day, seat, client, email } = req.body;
   try {
-    const newSeat = new Seat({ day, seat, client, email });
-    await newSeat.save();
-    res.json({ message: 'OK' });
+    const seatBooked = await Seat.findOne({ day, seat });
+    if (seatBooked) {
+      res.status(404).json({ message: 'Seat is booked' });
+    } else {
+      const clientInBase = await Client.findOne({ email });
+      if (clientInBase) {
+        const clientId = clientInBase._id;
+        const newSeat = new Seat({
+          day,
+          seat,
+          clientId,
+        });
+        await newSeat.save();
+        res.json({ message: 'OK' });
+      } else {
+        const newClient = new Client({ name: client, email });
+        await newClient.save();
+        const newSeat = new Seat({
+          day,
+          seat,
+          clientId: newClient._id,
+        });
+        await newSeat.save();
+        res.json({ message: 'OK' });
+      }
+    }
   } catch (err) {
     res.status(500).json({ message: err });
   }
