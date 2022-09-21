@@ -26,7 +26,6 @@ import io from 'socket.io-client';
 const OrderTicketForm = () => {
   const dispatch = useDispatch();
   const requests = useSelector(getRequests);
-  console.log(requests);
 
   const socket = io(CLIENT_URL);
   useEffect(() => {
