@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const socket = require('socket.io');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const app = express();
 
@@ -16,13 +17,12 @@ const io = socket(server, {
   cors: { origin: '*' },
 });
 
-io.on('connection', (socket) => {
-  console.log('New socket!' + socket.id);
-});
+io.on('connection', (socket) => {});
 
 app.use(cors());
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));
+app.use(helmet());
 
 app.use((req, res, next) => {
   req.io = io;
