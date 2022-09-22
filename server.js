@@ -59,8 +59,8 @@ else if (NODE_ENV === 'test')
   dbUri = 'mongodb://localhost:27017/NewWaveDBDBtest';
 else dbUri = 'mongodb://localhost:27017/NewWaveDB';
 
-if (NODE_ENV === 'production')
-  connectionString = `mongodb+srv://${MongoDB_Username}:${MongoDB_Password}@cluster0.telw8lc.mongodb.net/NewWaveDB?retryWrites=true&w=majority`;
+// if (NODE_ENV === 'production')
+connectionString = `mongodb+srv://${MongoDB_Username}:${MongoDB_Password}@cluster0.telw8lc.mongodb.net/NewWaveDB?retryWrites=true&w=majority`;
 // else
 //   connectionString =
 //     'mongodb+srv://kaz4486:Robinho789@cluster0.telw8lc.mongodb.net/NewWaveDB?retryWrites=true&w=majority';
