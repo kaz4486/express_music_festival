@@ -22,9 +22,17 @@ exports.getById = async (req, res) => {
 };
 
 exports.post = async (req, res) => {
-  req.body = sanitize(req.body);
-  const { day, seat, client, email } = req.body;
+  // req.body = sanitize(req.body);
+  //??
+  console.log(req.body);
+  // const { day, seat, client, email } = req.body;
   try {
+    const day = sanitize(req.body.day);
+    const client = sanitize(req.body.client);
+    const email = sanitize(req.body.email);
+    const seat = sanitize(req.body.seat);
+    console.log(day, client, email, seat);
+    //dalej nie czyści
     const seatBooked = await Seat.findOne({ day, seat });
     if (seatBooked) {
       res.status(404).json({ message: 'Seat is booked' });
@@ -37,8 +45,9 @@ exports.post = async (req, res) => {
           seat,
           clientId,
         });
-        await newSeat.save();
-        res.json({ message: 'OK' });
+        const savedSeat = await newSeat.save();
+        req.io.emit('seatsUpdated', savedSeat);
+        res.json(savedSeat);
       } else {
         const newClient = new Client({ name: client, email });
         await newClient.save();
@@ -47,8 +56,9 @@ exports.post = async (req, res) => {
           seat,
           clientId: newClient._id,
         });
-        await newSeat.save();
-        res.json({ message: 'OK' });
+        const savedSeat = await newSeat.save();
+        req.io.emit('seatsUpdated', savedSeat);
+        res.json(savedSeat);
       }
     }
   } catch (err) {

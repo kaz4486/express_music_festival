@@ -4,6 +4,7 @@ const path = require('path');
 const socket = require('socket.io');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+require('dotenv').config();
 
 const app = express();
 
@@ -50,8 +51,8 @@ app.use((req, res) => {
 });
 
 const NODE_ENV = process.env.NODE_ENV;
-const MongoDB_Username = process.env.MONGODB_USERNAME;
-const MongoDB_Password = process.env.MONGODB_PASSWORD;
+let MongoDB_Username = process.env.MONGODB_USERNAME;
+let MongoDB_Password = process.env.MONGODB_PASSWORD;
 let dbUri = '';
 
 if (NODE_ENV === 'production') dbUri = 'url to remote db';
@@ -59,11 +60,7 @@ else if (NODE_ENV === 'test')
   dbUri = 'mongodb://localhost:27017/NewWaveDBDBtest';
 else dbUri = 'mongodb://localhost:27017/NewWaveDB';
 
-// if (NODE_ENV === 'production')
 connectionString = `mongodb+srv://${MongoDB_Username}:${MongoDB_Password}@cluster0.telw8lc.mongodb.net/NewWaveDB?retryWrites=true&w=majority`;
-// else
-//   connectionString =
-//     'mongodb+srv://kaz4486:Robinho789@cluster0.telw8lc.mongodb.net/NewWaveDB?retryWrites=true&w=majority';
 
 mongoose.connect(connectionString, {
   useNewUrlParser: true,

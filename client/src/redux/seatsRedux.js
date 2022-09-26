@@ -32,8 +32,9 @@ export const loadSeatsRequest = () => {
     dispatch(startRequest({ name: 'LOAD_SEATS' }));
     try {
       let res = await axios.get(`${API_URL}/seats`);
+      //axios?
 
-      dispatch(loadSeats(res.data));
+      dispatch(loadSeats(res.data)); //?
       dispatch(endRequest({ name: 'LOAD_SEATS' }));
     } catch (e) {
       dispatch(errorRequest({ name: 'LOAD_SEATS', error: e.message }));
@@ -47,7 +48,7 @@ export const addSeatRequest = (seat) => {
     try {
       let res = await axios.post(`${API_URL}/seats`, seat);
 
-      dispatch(addSeat(res));
+      dispatch(addSeat(res.data)); //?
       dispatch(endRequest({ name: 'ADD_SEAT' }));
     } catch (e) {
       dispatch(errorRequest({ name: 'ADD_SEAT', error: e.message }));
