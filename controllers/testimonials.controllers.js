@@ -2,19 +2,21 @@ const Testimonial = require('../models/testimonial.model');
 
 exports.getAll = async (req, res) => {
   try {
-    res.json(await Testimonial.find());
+    return res.json(await Testimonial.find());
   } catch (err) {
-    res.status(500).json({ message: err });
+    return res.status(500).json({ message: err });
   }
 };
 
 exports.getById = async (req, res) => {
   try {
     const testimonial = await Testimonial.findById(req.params.id);
-    if (!testimonial) res.status(404).json({ message: 'Not found' });
-    else res.json(testimonial);
+    if (!testimonial) {
+      return res.status(404).json({ message: 'Not found' });
+    }
+    return res.json(testimonial);
   } catch (err) {
-    res.status(500).json({ message: err });
+    return res.status(500).json({ message: err });
   }
 };
 
@@ -23,9 +25,9 @@ exports.post = async (req, res) => {
     const { author, text } = req.body;
     const newTestimonial = new Testimonial({ author, text });
     await newTestimonial.save();
-    res.json({ message: 'OK' });
+    return res.json({ message: 'OK' });
   } catch (err) {
-    res.status(500).json({ message: err });
+    return res.status(500).json({ message: err });
   }
 };
 
@@ -39,13 +41,14 @@ exports.put = async (req, res) => {
       { new: true }
     );
     if (testimonial) {
-      res.json({
+      return res.json({
         message: 'OK',
         modifiedTestimonial: testimonial,
       });
-    } else res.status(404).json({ message: 'Not found...' });
+    }
+    return res.status(404).json({ message: 'Not found...' });
   } catch (err) {
-    res.status(500).json({ message: err });
+    return res.status(500).json({ message: err });
   }
 };
 
@@ -55,9 +58,10 @@ exports.delete = async (req, res) => {
       _id: req.params.id,
     });
     if (testimonial) {
-      res.json({ message: 'OK', deletedTestimonial: testimonial });
-    } else res.status(404).json({ message: 'Not found' });
+      return res.json({ message: 'OK', deletedTestimonial: testimonial });
+    }
+    return res.status(404).json({ message: 'Not found' });
   } catch (err) {
-    res.status(500).json({ message: err });
+    return res.status(500).json({ message: err });
   }
 };
